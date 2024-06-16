@@ -20,14 +20,14 @@ data class Profile(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "profile_id")
     val profileId: Int = 0,
-
-    val motto: String,
-    val photo: String,
-
     @ColumnInfo(name = "first_name")
     val firstName: String,
     @ColumnInfo(name = "last_name")
     val lastName: String,
+
+    val motto: String,
+    val photo: String,
+
     @ColumnInfo(name = "user_id")
     val userId: Int
 )
