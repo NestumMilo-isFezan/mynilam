@@ -23,6 +23,7 @@ import androidx.room.PrimaryKey
 )
 data class Review(
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "review_id")
     val reviewId: Int,
     val comment: String,
     val star: Int,

@@ -29,5 +29,5 @@ data class Profile(
     val photo: String,
 
     @ColumnInfo(name = "user_id")
-    val userId: Int
+    var userId: Int
 )
