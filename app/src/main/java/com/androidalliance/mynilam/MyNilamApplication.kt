@@ -4,7 +4,7 @@ import android.app.Application
 import com.androidalliance.mynilam.data.di.AppModule
 import com.androidalliance.mynilam.data.di.AppModuleImpl
 
-class MyNilamApplication() : Application() {
+class MyNilamApplication : Application() {
     companion object{
         lateinit var appModule: AppModule
     }

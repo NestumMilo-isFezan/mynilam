@@ -18,23 +18,10 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE) // Create Profile
     suspend fun createProfile(profile: Profile)
 
-    @Query("SELECT * FROM user, profile") // Get User List
-    fun getAllUser(): Flow<List<User>>
     @Query("SELECT * FROM user WHERE username = :username AND password = :password") // Get A User
-    fun getUser(username: String, password: String): Flow<User>
-
-    @Transaction
-    suspend fun createUserAndProfile(user: User, profile: Profile) {
-        val getUserId = registerUser(user)
-        profile.userId = getUserId.toInt()
-        createProfile(profile)
-    }
-
-//    // Register User
-//    @Insert(onConflict = OnConflictStrategy.IGNORE)
-//    suspend fun registerUser(user: User)
-//
-//    // Get a User
-//    @Query("SELECT * FROM user WHERE uid = :id")
-//    fun getUser(id: Int): LiveData<User>
+    fun loginUser(username: String, password: String): User?
+    @Query("SELECT * FROM user WHERE username = :username") // Get A User
+    fun isUsernameExisted(username: String): Boolean
+    @Query("SELECT * FROM user WHERE email = :email OR username = :username") // Get A User
+    fun isUserExists(email: String, username: String): Boolean
 }

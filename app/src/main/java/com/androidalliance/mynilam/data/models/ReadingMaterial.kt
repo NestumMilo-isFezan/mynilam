@@ -9,11 +9,16 @@ data class ReadingMaterial(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "material_id")
     val materialId: Int = 0,
-
+    @ColumnInfo(name = "title")
     val title: String,
+    @ColumnInfo(name = "author")
     val author: String,
+    @ColumnInfo(name = "type")
     val type: String,
+    @ColumnInfo(name = "genre")
     val genre: String,
+    @ColumnInfo(name = "publication")
     val publication: String,
+    @ColumnInfo(name = "publication_year")
     val publicationYear: Int
 )

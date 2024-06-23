@@ -26,6 +26,7 @@ data class Record(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "record_id")
     val recordId: Int = 0,
+    @ColumnInfo(name = "summary")
     val summary: String,
 
     @ColumnInfo(name = "user_id")

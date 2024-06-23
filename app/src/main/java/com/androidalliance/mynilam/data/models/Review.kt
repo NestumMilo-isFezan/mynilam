@@ -25,9 +25,10 @@ data class Review(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "review_id")
     val reviewId: Int,
+    @ColumnInfo(name = "comment")
     val comment: String,
+    @ColumnInfo(name = "star")
     val star: Int,
-
     @ColumnInfo(name = "user_id")
     val userId: Int,
     @ColumnInfo(name = "material_id")

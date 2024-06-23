@@ -24,7 +24,7 @@ import com.androidalliance.mynilam.data.models.User
         ReadingMaterial::class
     ],
     version = 1,
-    exportSchema = false
+    exportSchema = true
 )
 abstract class MyNilamDatabase: RoomDatabase() {
 
@@ -38,30 +38,34 @@ abstract class MyNilamDatabase: RoomDatabase() {
         @Volatile
         private var Instance: MyNilamDatabase? = null
 
-//        fun getDatabase(context: Context): MyNilamDatabase{
-//            return Instance ?: synchronized(this){
-//                databaseBuilder(
-//                    context = context,
-//                    klass = MyNilamDatabase::class.java,
-//                    name = "mynilam_database"
-//                )
-//                    .createFromAsset("databases/mynilam_database.db")
-//                    .fallbackToDestructiveMigration()
-//                    .build()
-//                    .also { Instance = it }
-//            }
-//        }
-        fun getDatabase(context: Context): MyNilamDatabase{
-            return Instance ?: synchronized(this){
+        fun getDatabase(context: Context): MyNilamDatabase {
+            return Instance ?: synchronized(this) {
                 Room.databaseBuilder(
                     context = context,
                     klass = MyNilamDatabase::class.java,
                     name = "mynilam_database"
-                ).createFromAsset("databases/mynilam_database.db")
-                    .fallbackToDestructiveMigration()
+                )
+//                    .createFromAsset("database/mynilam_database.db")
+//                    .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }
         }
     }
 }
+//    companion object {
+//        @Volatile
+//        private var INSTANCE: BakeryDatabase? = null
+//
+//        fun getDatabase(context: Context): BakeryDatabase =
+//            INSTANCE ?: synchronized(this) {
+//                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
+//            }
+//
+//        private fun buildDatabase(context: Context) =
+//            Room.databaseBuilder(
+//                context.applicationContext,
+//                BakeryDatabase::class.java,
+//                "bakery_database"
+//            ).build()
+//        }

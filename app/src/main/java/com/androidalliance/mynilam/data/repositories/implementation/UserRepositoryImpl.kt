@@ -4,52 +4,44 @@ import com.androidalliance.mynilam.data.dao.UserDao
 import com.androidalliance.mynilam.data.models.Profile
 import com.androidalliance.mynilam.data.models.User
 import com.androidalliance.mynilam.data.repositories.interfaces.UserRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flowOf
 
-class UserRepositoryImpl(
-    val userDao: UserDao
+class UserRepositoryImpl (
+    private val userDao: UserDao
 ) : UserRepository {
-    override suspend fun registerUser(user: User) {
-        try{
-            userDao.registerUser(user)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
+    override suspend fun registerUser(user: User): Long {
+        val insertedUserId = userDao.registerUser(user)
+        return insertedUserId
     }
 
     override suspend fun createProfile(profile: Profile) {
-        try{
-            userDao.createProfile(profile)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
+        userDao.createProfile(profile)
     }
 
-    override fun getAllUser(): Flow<List<User>> {
-        try{
-            return userDao.getAllUser()
-        }catch (e: Exception){
-            e.printStackTrace()
-            return flowOf(emptyList())
-        }
+    override fun loginUser(username: String, password: String): User? {
+        return userDao.loginUser(username, password)
     }
 
-    override fun getUser(username: String, password: String): Flow<User> {
-        try{
-            return userDao.getUser(username, password)
-        }catch (e: Exception){
-            e.printStackTrace()
-            return emptyFlow()
-        }
+    override suspend fun createUserAndProfile(user: User) {
+        val insertedUserId = userDao.registerUser(user)
+        val profile = Profile(
+            profileId = insertedUserId.toInt(),
+            firstName = "New",
+            lastName = "User",
+            userId = insertedUserId.toInt(),
+            motto = "Hello World"
+        )
+        userDao.createProfile(profile)
     }
 
-    override suspend fun createUserAndProfile(user: User, profile: Profile) {
-        try{
-            userDao.createUserAndProfile(user, profile)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
+    override suspend fun isUsernameExists(username: String): Boolean {
+        return userDao.isUsernameExisted(username)
+    }
+
+    override suspend fun isUserExists(email: String, username: String): Boolean {
+        return userDao.isUserExists(email, username)
+    }
+
+    override suspend fun getUserSession(user: User): Int? {
+        return user.uid
     }
 }

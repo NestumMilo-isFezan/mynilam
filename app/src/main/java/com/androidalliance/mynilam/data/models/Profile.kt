@@ -24,10 +24,8 @@ data class Profile(
     val firstName: String,
     @ColumnInfo(name = "last_name")
     val lastName: String,
-
+    @ColumnInfo(name = "motto")
     val motto: String,
-    val photo: String,
-
     @ColumnInfo(name = "user_id")
     var userId: Int
 )
