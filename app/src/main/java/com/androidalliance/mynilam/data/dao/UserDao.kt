@@ -24,4 +24,6 @@ interface UserDao {
     fun isUsernameExisted(username: String): Boolean
     @Query("SELECT * FROM user WHERE email = :email OR username = :username") // Get A User
     fun isUserExists(email: String, username: String): Boolean
+    @Query("SELECT * FROM user WHERE uid = :userId") // Get A User
+    fun getUserId(userId: Int): User?
 }

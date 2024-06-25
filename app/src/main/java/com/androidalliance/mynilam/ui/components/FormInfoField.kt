@@ -27,7 +27,7 @@ fun FormInfoField(
     readOnly: Boolean? = null
 ){
     OutlinedTextField(
-        modifier = modifier.height(50.dp),
+        modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         label = { Text(labelText) },

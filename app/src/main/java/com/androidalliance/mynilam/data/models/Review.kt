@@ -24,7 +24,7 @@ import androidx.room.PrimaryKey
 data class Review(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "review_id")
-    val reviewId: Int,
+    val reviewId: Int = 0,
     @ColumnInfo(name = "comment")
     val comment: String,
     @ColumnInfo(name = "star")

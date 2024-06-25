@@ -30,15 +30,46 @@ class UserViewModel(
 
     var state by mutableStateOf(AuthFormState())
 
+    private val _showTopAppBar = MutableStateFlow(true)
+    val sharedShowTopAppBar = _showTopAppBar.asStateFlow()
+
     private val _userState = MutableStateFlow<User?>(null)
     val sharedUserState = _userState.asStateFlow()
 
     private val validationEventsChannel = Channel<ValidationEvent>()
     val validationEvents = validationEventsChannel.receiveAsFlow()
 
-    fun updateUserSession(user: User){
+    private fun updateUserSession(user: User){
         viewModelScope.launch {
-            _userState.value = user
+            withContext(Dispatchers.Main){
+                _userState.value = user
+            }
+        }
+    }
+
+    fun showTopAppBar(){
+        viewModelScope.launch {
+            withContext(Dispatchers.Main){
+                _showTopAppBar.value = true
+            }
+        }
+    }
+
+    fun hideTopAppBar() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                _showTopAppBar.value = false
+            }
+        }
+    }
+
+    fun clearForm(){
+        state = AuthFormState()
+    }
+
+    suspend fun getUserInfoById(userId: Int) :User?{
+        return withContext(Dispatchers.IO){
+            userRepository.getUserById(userId)
         }
     }
 
@@ -110,6 +141,7 @@ class UserViewModel(
                 validationEventsChannel.send(ValidationEvent.Success)
                 val createUser = User(username = state.username, password = state.password, email = state.email)
                 userRepository.createUserAndProfile(createUser)
+                clearForm()
             }
         }
     }
@@ -140,9 +172,19 @@ class UserViewModel(
             }else{
                 validationEventsChannel.send(ValidationEvent.Success)
                 updateUserSession(user)
+                clearForm()
             }
         }
 
+    }
+
+    fun signOut(){
+        clearForm()
+        updateUserSession(User(
+            username = "",
+            password = "",
+            email = ""
+        ))
     }
 
     sealed class ValidationEvent {

@@ -11,44 +11,22 @@ class RecordRepositoryImpl(
     private val recordDao: RecordDao
 ) : RecordRepository {
     override fun getAllRecordByUser(userId: Int): Flow<List<Record>> {
-        try{
-            return recordDao.getAllRecordByUser(userId)
-        }catch (e:Exception){
-            e.printStackTrace()
-            return flowOf(emptyList())
-        }
+        return recordDao.getAllRecordByUser(userId)
     }
 
-    override fun getRecord(recordId: Int, userId: Int): Flow<Record> {
-        try{
-            return recordDao.getRecord(recordId, userId)
-        }catch (e:Exception){
-            e.printStackTrace()
-            return emptyFlow()
-        }
+    override fun getRecord(recordId: Int, userId: Int): Record? {
+        return recordDao.getRecord(recordId, userId)
     }
 
     override suspend fun insertRecord(record: Record) {
-        try{
-            recordDao.insertRecord(record)
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
+        recordDao.insertRecord(record)
     }
 
     override suspend fun updateRecord(record: Record) {
-        try{
-            recordDao.updateRecord(record)
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
+        recordDao.updateRecord(record)
     }
 
     override suspend fun deleteRecord(record: Record) {
-        try{
-            recordDao.deleteRecord(record)
-        }catch (e:Exception){
-            e.printStackTrace()
-        }
+        recordDao.deleteRecord(record)
     }
 }

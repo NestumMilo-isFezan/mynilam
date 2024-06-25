@@ -24,6 +24,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -33,14 +36,51 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.androidalliance.mynilam.data.models.ReadingMaterial
+import com.androidalliance.mynilam.data.models.Record
+import com.androidalliance.mynilam.navigation.MainScreen
 import com.androidalliance.mynilam.navigation.RecordPage
+import com.androidalliance.mynilam.ui.screen.auths.viewmodel.UserViewModel
+import com.androidalliance.mynilam.ui.screen.mainfeatures.book.viewmodel.BookViewModel
+import com.androidalliance.mynilam.ui.screen.mainfeatures.record.viewmodel.RecordViewModel
 
 @Composable
 fun RecordDetailScreen(
     navController: NavHostController,
-    recordName: String
+    bookViewModel: BookViewModel,
+    recordViewModel: RecordViewModel,
+    viewModel: UserViewModel
 ) {
+    // Urus State dulu
+    viewModel.hideTopAppBar()
+    val bookState = bookViewModel.sharedBookState.collectAsStateWithLifecycle()
+    val recordState = recordViewModel.sharedRecordInfo.collectAsStateWithLifecycle()
+
+    val bookItem by remember {
+        derivedStateOf {
+            bookState.value ?: ReadingMaterial(
+                title = "Title",
+                author = "Author",
+                type = "Undefined Type",
+                genre = "Undefined Genre",
+                publication = "Undefined Publication",
+                publicationYear = 2000
+            )
+        }
+    }
+    val recordItem by remember {
+        derivedStateOf {
+            recordState.value ?: Record(
+                summary = "Summary",
+                userId = 0,
+                materialId = 0
+            )
+        }
+    }
+
+
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -88,7 +128,7 @@ fun RecordDetailScreen(
                     ) {
                         //
                         Text(
-                            text = recordName,
+                            text = bookItem.title,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Black,
                             lineHeight = 16.sp
@@ -103,7 +143,9 @@ fun RecordDetailScreen(
                             Button(
                                 modifier = Modifier
                                     .padding(vertical = 20.dp),
-                                onClick = { /*TODO*/ }
+                                onClick = {
+                                    navController.navigate(RecordPage.EditForm.route)
+                                }
                             ) {
                                 Row (
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -123,7 +165,14 @@ fun RecordDetailScreen(
                             Button(
                                 modifier = Modifier
                                     .padding(vertical = 20.dp),
-                                onClick = { /*TODO*/ }
+                                onClick = {
+                                    recordViewModel.deleteRecord(recordItem)
+                                    navController.navigate(MainScreen.Record.route){
+                                        popUpTo(RecordPage.Detail.route){
+                                            inclusive = true
+                                        }
+                                    }
+                                }
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -161,6 +210,18 @@ fun RecordDetailScreen(
                                     shape = RoundedCornerShape(10.dp)
                                 ),
                             ){
+                            Column(
+                                modifier = Modifier.fillMaxSize().padding(vertical = 10.dp, horizontal = 15.dp),
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Top
+                            ){
+                                Text(
+                                    text = recordItem.summary,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Normal,
+                                    lineHeight = 16.sp
+                                )
+                            }
 
                         }
                     }
@@ -205,10 +266,4 @@ fun RecordDetailScreen(
         }
 
     }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun RecordDetailScreenPreview() {
-    RecordDetailScreen(navController = NavHostController(LocalContext.current), recordName = "Record Name")
 }

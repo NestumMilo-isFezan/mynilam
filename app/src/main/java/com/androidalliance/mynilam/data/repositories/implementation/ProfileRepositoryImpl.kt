@@ -9,20 +9,11 @@ import kotlinx.coroutines.flow.emptyFlow
 class ProfileRepositoryImpl(
     private val profileDao: ProfileDao
 ) : ProfileRepository {
-    override fun getProfile(id: Int): Flow<Profile> {
-        try {
-            return profileDao.getProfile(id)
-        }catch(e: Exception){
-            e.printStackTrace()
-            return emptyFlow()
-        }
+    override fun getProfile(id: Int): Profile? {
+        return profileDao.getProfile(id)
     }
 
     override suspend fun updateProfile(profile: Profile) {
-        try {
-            profileDao.updateProfile(profile)
-        }catch(e: Exception){
-            e.printStackTrace()
-        }
+        profileDao.updateProfile(profile)
     }
 }

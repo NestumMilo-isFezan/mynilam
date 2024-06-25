@@ -1,6 +1,5 @@
 package com.androidalliance.mynilam.ui.screen.mainfeatures.book
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,24 +24,46 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.androidalliance.mynilam.data.models.ReadingMaterial
 import com.androidalliance.mynilam.navigation.BookPage
-import com.androidalliance.mynilam.navigation.RecordPage
+import com.androidalliance.mynilam.navigation.MainScreen
+import com.androidalliance.mynilam.ui.screen.auths.viewmodel.UserViewModel
+import com.androidalliance.mynilam.ui.screen.mainfeatures.book.viewmodel.BookViewModel
 
 @Composable
 fun BookDetailScreen(
     navController: NavHostController,
-    bookName: String
+    bookViewModel: BookViewModel,
+    viewModel: UserViewModel
 ) {
+    // Book State
+    viewModel.hideTopAppBar()
+    val bookState = bookViewModel.sharedBookState.collectAsStateWithLifecycle()
+    val bookItem by remember {
+        derivedStateOf {
+            bookState.value ?: ReadingMaterial(
+                title = "Title",
+                author = "Author",
+                type = "Undefined Type",
+                genre = "Undefined Genre",
+                publication = "Undefined Publication",
+                publicationYear = 2000
+            )
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -90,7 +111,7 @@ fun BookDetailScreen(
                     ) {
                         //
                         Text(
-                            text = bookName,
+                            text = bookItem.title,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Black,
                             lineHeight = 16.sp
@@ -105,7 +126,9 @@ fun BookDetailScreen(
                             Button(
                                 modifier = Modifier
                                     .padding(vertical = 20.dp),
-                                onClick = { /*TODO*/ }
+                                onClick = {
+                                    navController.navigate(BookPage.EditForm.route)
+                                }
                             ) {
                                 Row (
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -122,26 +145,14 @@ fun BookDetailScreen(
                             Button(
                                 modifier = Modifier
                                     .padding(vertical = 20.dp),
-                                onClick = { /*TODO*/ }
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "Edit",
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(15.dp))
-                                    Text(text = "Summary")
+                                onClick = {
+                                    bookViewModel.deleteBook(bookItem)
+                                    navController.navigate(MainScreen.Book.route){
+                                        popUpTo(BookPage.Detail.route){
+                                            inclusive = true
+                                        }
+                                    }
                                 }
-                            }
-                            Spacer(modifier = Modifier.width(10.dp))
-                            Button(
-                                modifier = Modifier
-                                    .padding(vertical = 20.dp),
-                                onClick = { /*TODO*/ }
                             ) {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -159,7 +170,7 @@ fun BookDetailScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         //
                         Text(
-                            text = "Author",
+                            text = "Author : ${bookItem.author}",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Black,
                             lineHeight = 16.sp
@@ -168,7 +179,7 @@ fun BookDetailScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         //
                         Text(
-                            text = "Published by",
+                            text = "Publication : ${bookItem.publication}",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Black,
                             lineHeight = 16.sp
@@ -177,7 +188,7 @@ fun BookDetailScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         //
                         Text(
-                            text = "Genre",
+                            text = "Genre : ${bookItem.genre}",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Black,
                             lineHeight = 16.sp
@@ -186,7 +197,7 @@ fun BookDetailScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         //
                         Text(
-                            text = "Published Year",
+                            text = "Published Year : ${bookItem.publicationYear}",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Black,
                             lineHeight = 16.sp
@@ -195,7 +206,7 @@ fun BookDetailScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         //
                         Text(
-                            text = "Type",
+                            text = "Reading Material Type : ${bookItem.type}",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Black,
                             lineHeight = 16.sp
@@ -241,10 +252,4 @@ fun BookDetailScreen(
             }
         }
     }
-}
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun BookDetailScreenPreview() {
-    BookDetailScreen(navController = NavHostController(LocalContext.current), bookName = "Book Name")
 }

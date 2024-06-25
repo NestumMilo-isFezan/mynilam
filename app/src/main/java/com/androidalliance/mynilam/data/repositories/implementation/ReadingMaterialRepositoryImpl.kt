@@ -10,44 +10,26 @@ class ReadingMaterialRepositoryImpl(
     private val readingMaterialDao: ReadingMaterialDao
 ): ReadingMaterialRepository {
     override suspend fun insertMaterial(readingMaterial: ReadingMaterial) {
-        try{
-            readingMaterialDao.insertMaterial(readingMaterial)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
+        readingMaterialDao.insertMaterial(readingMaterial)
     }
 
     override suspend fun updateMaterial(readingMaterial: ReadingMaterial) {
-        try{
-            readingMaterialDao.updateMaterial(readingMaterial)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
+        readingMaterialDao.updateMaterial(readingMaterial)
     }
 
     override fun getAllMaterials(): Flow<List<ReadingMaterial>> {
-        try{
-            return readingMaterialDao.getAllMaterials()
-        }catch (e: Exception){
-            e.printStackTrace()
-            return emptyFlow()
-        }
+        return readingMaterialDao.getAllMaterials()
     }
 
-    override fun getMaterialById(id: Int): Flow<ReadingMaterial> {
-        try{
-            return readingMaterialDao.getMaterialById(id)
-        }catch (e: Exception){
-            e.printStackTrace()
-            return emptyFlow()
-        }
+    override fun getMaterialById(id: Int): ReadingMaterial? {
+        return readingMaterialDao.getMaterialById(id)
     }
 
     override suspend fun deleteMaterial(readingMaterial: ReadingMaterial) {
-        try{
-            readingMaterialDao.deleteMaterial(readingMaterial)
-        }catch (e: Exception){
-            e.printStackTrace()
-        }
+        readingMaterialDao.deleteMaterial(readingMaterial)
+    }
+
+    override suspend fun getMaterialByTitle(title: String): ReadingMaterial? {
+        return readingMaterialDao.getMaterialByTitle(title)
     }
 }

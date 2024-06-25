@@ -7,7 +7,7 @@ interface ReviewRepository {
     fun getAllReviews(): Flow<List<Review>>
     fun getReviewByUser(userId: Int): Flow<List<Review>>
     fun getReviewByMaterials(materialId: Int): Flow<List<Review>>
-    fun getReviewById(materialId: Int): Flow<Review>
+    fun getReviewById(materialId: Int): Review?
     suspend fun insertReview(review: Review)
     suspend fun deleteReview(review: Review)
     suspend fun updateReview(review: Review)

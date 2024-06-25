@@ -7,6 +7,8 @@ interface ReadingMaterialRepository {
     suspend fun insertMaterial(readingMaterial: ReadingMaterial)
     suspend fun updateMaterial(readingMaterial: ReadingMaterial)
     fun getAllMaterials(): Flow<List<ReadingMaterial>>
-    fun getMaterialById(id: Int): Flow<ReadingMaterial>
+    fun getMaterialById(id: Int): ReadingMaterial?
     suspend fun deleteMaterial(readingMaterial: ReadingMaterial)
+    suspend fun getMaterialByTitle(title: String): ReadingMaterial?
+
 }

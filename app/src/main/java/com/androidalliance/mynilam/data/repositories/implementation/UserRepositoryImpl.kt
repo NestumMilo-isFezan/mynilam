@@ -44,4 +44,8 @@ class UserRepositoryImpl (
     override suspend fun getUserSession(user: User): Int? {
         return user.uid
     }
+
+    override suspend fun getUserById(userId: Int): User? {
+        return userDao.getUserId(userId)
+    }
 }

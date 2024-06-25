@@ -11,4 +11,5 @@ interface UserRepository {
     suspend fun isUsernameExists(username: String): Boolean
     suspend fun isUserExists(email: String, password: String): Boolean
     suspend fun getUserSession(user: User): Int?
+    suspend fun getUserById(userId: Int): User?
 }

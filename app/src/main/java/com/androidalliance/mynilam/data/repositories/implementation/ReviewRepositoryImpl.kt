@@ -37,13 +37,8 @@ class ReviewRepositoryImpl(
         }
     }
 
-    override fun getReviewById(materialId: Int): Flow<Review> {
-        try{
-            return reviewDao.getReviewById(materialId)
-        }catch (e: Exception){
-            e.printStackTrace()
-            return emptyFlow()
-        }
+    override fun getReviewById(materialId: Int): Review? {
+        return reviewDao.getReviewById(materialId)
     }
 
     override suspend fun insertReview(review: Review) {

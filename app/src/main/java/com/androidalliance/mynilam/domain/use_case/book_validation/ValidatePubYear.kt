@@ -11,7 +11,7 @@ class ValidatePubYear {
                 errorMessage = "The book title field must be fill in!"
             )
         }
-        val containsLetter = pubYear.any { it.isDigit() }
+        val containsLetter = pubYear.any { it.isLetter() }
         if(containsLetter) {
             return ValidationResult(
                 successful = false,

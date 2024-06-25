@@ -15,25 +15,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.androidalliance.mynilam.MyNilamApplication
 import com.androidalliance.mynilam.navigation.MainScreen
 import com.androidalliance.mynilam.ui.components.AuthTextField
 import com.androidalliance.mynilam.ui.components.HeaderText
 import com.androidalliance.mynilam.ui.screen.auths.viewmodel.LoginEvent
 import com.androidalliance.mynilam.ui.screen.auths.viewmodel.UserViewModel
-import com.androidalliance.mynilam.ui.screen.viewModelFactory
 
 val defaultPadding = 16.dp
 val itemSpacing = 12.dp
@@ -55,7 +51,7 @@ fun LoginScreen(
                 is UserViewModel.ValidationEvent.Success -> {
                     Toast.makeText(
                         context,
-                        "Welcome, ",
+                        "Welcome",
                         Toast.LENGTH_LONG
                     ).show()
                     navController.navigate(MainScreen.Main.route){

@@ -1,6 +1,7 @@
 package com.androidalliance.mynilam.ui.screen.mainfeatures.book.viewmodel
 
 data class BookFormState(
+    val bookId: Int = 0,
     val title: String = "",
     val titleError: String? = null,
     val author: String = "",

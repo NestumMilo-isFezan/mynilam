@@ -1,33 +1,82 @@
 package com.androidalliance.mynilam.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import com.androidalliance.mynilam.MyNilamApplication
 import com.androidalliance.mynilam.ui.screen.auths.viewmodel.UserViewModel
 import com.androidalliance.mynilam.ui.screen.mainfeatures.book.BookDetailScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.book.BookFormScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.book.BookScreen
+import com.androidalliance.mynilam.ui.screen.mainfeatures.book.viewmodel.BookViewModel
 import com.androidalliance.mynilam.ui.screen.mainfeatures.home.HomeScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.home.statistics.StatisticScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.profile.ProfileFormScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.profile.ProfileScreen
+import com.androidalliance.mynilam.ui.screen.mainfeatures.profile.viewmodel.ProfileViewModel
 import com.androidalliance.mynilam.ui.screen.mainfeatures.record.RecordDetailScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.record.RecordFormScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.record.RecordScreen
+import com.androidalliance.mynilam.ui.screen.mainfeatures.record.viewmodel.RecordViewModel
 import com.androidalliance.mynilam.ui.screen.mainfeatures.review.ReviewDetailScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.review.ReviewFormScreen
 import com.androidalliance.mynilam.ui.screen.mainfeatures.review.ReviewScreen
+import com.androidalliance.mynilam.ui.screen.mainfeatures.review.viewmodel.ReviewViewModel
+import com.androidalliance.mynilam.ui.screen.viewModelFactory
 
 @Composable
 fun homeNavGraph(
     navController: NavHostController,
-    viewModel: UserViewModel
+    viewModel: UserViewModel,
+    modifier: Modifier = Modifier
 ){
     val userState = viewModel.sharedUserState.collectAsStateWithLifecycle()
+
+    // BookVM
+    val bookViewModel = viewModel<BookViewModel>(
+        factory = viewModelFactory {
+            BookViewModel(
+                bookRepository = (MyNilamApplication.appModule.readingMaterialRepository)
+            )
+        }
+    )
+    val bookState = bookViewModel.sharedBookState.collectAsStateWithLifecycle()
+
+    // RecordVM
+    val recordViewModel = viewModel<RecordViewModel>(
+        factory = viewModelFactory {
+            RecordViewModel(
+                recordRepository = (MyNilamApplication.appModule.recordRepository),
+                bookRepository = (MyNilamApplication.appModule.readingMaterialRepository)
+            )
+        }
+    )
+
+    // ReviewVM
+    val reviewViewModel = viewModel<ReviewViewModel>(
+        factory = viewModelFactory {
+            ReviewViewModel(
+                reviewRepository = (MyNilamApplication.appModule.reviewRepository),
+                bookRepository = (MyNilamApplication.appModule.readingMaterialRepository)
+            )
+        }
+    )
+
+    // ProfileVM
+    val profileViewModel = viewModel<ProfileViewModel>(
+        factory = viewModelFactory {
+            ProfileViewModel(
+                profileRepository = (MyNilamApplication.appModule.profileRepository)
+            )
+        }
+    )
+
+
+
     NavHost(
         navController = navController,
         startDestination = MainScreen.Home.route,
@@ -37,7 +86,7 @@ fun homeNavGraph(
         composable(
             route = MainScreen.Home.route,
         ){
-            HomeScreen(navController, viewModel)
+            HomeScreen(navController, viewModel, modifier)
         }
         // Home -> Statistic
         composable(
@@ -52,39 +101,26 @@ fun homeNavGraph(
         composable(
             route = MainScreen.Record.route
         ){
-            RecordScreen(navController, viewModel)
+            RecordScreen(navController, viewModel, bookViewModel ,recordViewModel, modifier)
         }
         // Record -> Add Form
         composable(
             route = RecordPage.AddForm.route
         ){
-            RecordFormScreen(navController, "add", "")
+            RecordFormScreen(navController, "add", recordViewModel, bookViewModel, viewModel)
         }
         // Record -> Detail
         composable(
-            route = RecordPage.Detail.route + "/{record_name}",
-            arguments = listOf(
-                navArgument("record_name"){
-                    type = NavType.StringType
-                }
-            )
+            route = RecordPage.Detail.route,
         ){
-            // Check if the record name, ada ke tidak
-            val recordName = it.arguments?.getString("record_name") ?: ""
-            RecordDetailScreen(navController, recordName)
+            RecordDetailScreen(navController, bookViewModel, recordViewModel, viewModel)
 
         }
         // Record -> Details -> Edit
         composable(
-            route = RecordPage.EditForm.route + "/{record_name}",
-            arguments = listOf(
-                navArgument("record_name"){
-                    type = NavType.StringType
-                }
-            )
+            route = RecordPage.EditForm.route
         ){
-            val recordName = it.arguments?.getString("record_name") ?: ""
-            RecordFormScreen(navController, "edit", recordName)
+            RecordFormScreen(navController, "edit", recordViewModel, bookViewModel, viewModel)
         }
 
 
@@ -93,39 +129,27 @@ fun homeNavGraph(
         composable(
             route = MainScreen.Book.route
         ){
-            BookScreen(navController, viewModel)
+            BookScreen(navController, viewModel, bookViewModel , modifier)
         }
         // Book -> Add Form
         composable(
             route = BookPage.AddForm.route
         ){
-            BookFormScreen(navController, "add", "")
+            BookFormScreen(navController, "add", bookViewModel, viewModel)
         }
         // Book -> Detail
         composable(
-            route = BookPage.Detail.route + "/{book_name}",
-            arguments = listOf(
-                navArgument("book_name"){
-                    type = NavType.StringType
-                }
-            )
+            route = BookPage.Detail.route
         ){
             // Check if the book name, ada ke tidak
-            val bookName = it.arguments?.getString("book_name") ?: ""
-            BookDetailScreen(navController, bookName)
+            BookDetailScreen(navController, bookViewModel, viewModel)
 
         }
         // Book -> Details -> Edit
         composable(
-            route = BookPage.EditForm.route + "/{book_name}",
-            arguments = listOf(
-                navArgument("book_name"){
-                    type = NavType.StringType
-                }
-            )
+            route = BookPage.EditForm.route
         ){
-            val recordName = it.arguments?.getString("book_name") ?: ""
-            BookFormScreen(navController, "edit", recordName)
+            BookFormScreen(navController, "edit", bookViewModel, viewModel)
         }
 
 
@@ -134,38 +158,25 @@ fun homeNavGraph(
         composable(
             route = MainScreen.Review.route
         ){
-            ReviewScreen(navController, viewModel)
+            ReviewScreen(navController, viewModel, reviewViewModel, bookViewModel, modifier)
         }
         // Review -> Add Form
         composable(
             route = ReviewPage.AddForm.route
         ){
-            ReviewFormScreen(navController, "add", "")
+            ReviewFormScreen(navController, "add", reviewViewModel, bookViewModel, viewModel)
         }
         // Review -> Detail
         composable(
-            route = ReviewPage.Detail.route + "/{review_name}",
-            arguments = listOf(
-                navArgument("review_name"){
-                    type = NavType.StringType
-                }
-            )
+            route = ReviewPage.Detail.route
         ){
-            // Check if the review name, ada ke tidak
-            val reviewName = it.arguments?.getString("review_name") ?: ""
-            ReviewDetailScreen(navController, reviewName)
+            ReviewDetailScreen(navController, reviewViewModel, bookViewModel, viewModel)
         }
         // Review -> Details -> Edit
         composable(
-            route = ReviewPage.EditForm.route + "/{review_name}",
-            arguments = listOf(
-                navArgument("review_name"){
-                    type = NavType.StringType
-                }
-            )
+            route = ReviewPage.EditForm.route
         ){
-            val reviewName = it.arguments?.getString("review_name") ?: ""
-            ReviewFormScreen(navController, "edit", reviewName)
+            ReviewFormScreen(navController, "edit", reviewViewModel, bookViewModel, viewModel)
         }
 
 
@@ -173,18 +184,12 @@ fun homeNavGraph(
         composable(
             route = MainScreen.Profile.route
         ){
-            ProfileScreen(navController, viewModel)
+            ProfileScreen(navController, viewModel, profileViewModel, modifier)
         }
         composable(
-            route = ProfilePage.EditForm.route + "/{profile_id}",
-            arguments = listOf(
-                navArgument("profile_id"){
-                    type = NavType.IntType
-                }
-            )
+            route = ProfilePage.EditForm.route
         ){
-            val profileName = it.arguments?.getInt("profile_id") ?: 0
-            ProfileFormScreen(navController, profileName)
+            ProfileFormScreen(navController, profileViewModel, viewModel)
         }
     }
 

@@ -4,6 +4,6 @@ import com.androidalliance.mynilam.data.models.Profile
 import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
-    fun getProfile(id: Int): Flow<Profile>
+    fun getProfile(id: Int): Profile?
     suspend fun updateProfile(profile: Profile)
 }

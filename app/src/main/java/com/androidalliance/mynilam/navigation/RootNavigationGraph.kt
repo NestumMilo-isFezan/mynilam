@@ -1,14 +1,16 @@
 package com.androidalliance.mynilam.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.androidalliance.mynilam.MyNilamApplication
+import com.androidalliance.mynilam.navigation.BookPage.AddForm.route
 import com.androidalliance.mynilam.ui.screen.auths.viewmodel.UserViewModel
 import com.androidalliance.mynilam.ui.screen.mainfeatures.MainScaffold
 import com.androidalliance.mynilam.ui.screen.viewModelFactory

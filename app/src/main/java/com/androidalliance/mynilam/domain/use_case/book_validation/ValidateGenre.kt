@@ -7,7 +7,7 @@ class ValidateGenre {
         if (genre.isBlank()) {
             return ValidationResult(
                 successful = false,
-                errorMessage = "The book title field must be fill in!"
+                errorMessage = "The book genre field must be fill in!"
             )
         }
         return ValidationResult(
